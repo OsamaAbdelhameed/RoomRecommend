@@ -1,5 +1,4 @@
 import uvicorn
-import pickle
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
@@ -38,8 +37,6 @@ y_pred = knn.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
 print('Accuracy:', accuracy)
 
-pickle.dump(knn, open("model_gb.pkl", "wb"))
-
 app = FastAPI(title="ML Models as API on Google Colab", description="with FastAPI and ColabCode", version="1.0")
 
 # Define the request body model
@@ -49,14 +46,6 @@ class InputData(BaseModel):
     budget: float
     have_transportation: float
     inside_utm: float
-
-knn = None
-
-@app.on_event("startup")
-def load_model():
-    global knn
-    knn = pickle.load(open("model_gb.pkl", "rb"))
-
 
 @app.get("/")
 async def read_root():
