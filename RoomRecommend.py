@@ -55,7 +55,7 @@ async def read_root():
 async def predict(input_data: InputData):
     print(input_data)
     # Prepare input data for prediction
-    input_array = pd.Series([input_data.room_type, input_data.single_bed, input_data.budget, input_data.have_transportation, input_data.inside_utm]).to_numpy()
+    input_array = pd.Series([[input_data.room_type, input_data.single_bed, input_data.budget, input_data.have_transportation, input_data.inside_utm]]).to_numpy()
 
     # Make predictions
     predictions = knn.predict(input_array)
