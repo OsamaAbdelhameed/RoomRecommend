@@ -1,29 +1,13 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
-get_ipython().system('pip install fastapi uvicorn')
-get_ipython().system('pip install colabcode')
-
-
-# In[2]:
-
-
+import uvicorn
+import pickle
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 import numpy as np
-import pickle
-
-# from google.colab import drive
-# drive.mount('/content/drive')
-
-# data_path = '/content/drive/MyDrive/UTMSIR Colab files/data.csv'
-# labels_path = '/content/drive/MyDrive/UTMSIR Colab files/labels.csv'
-
+from fastapi import FastAPI
+from pydantic import BaseModel
+from fastapi.encoders import jsonable_encoder
 
 # Load your dataset
 X = pd.read_csv('./data.csv', header=None)
@@ -56,20 +40,7 @@ print('Accuracy:', accuracy)
 
 pickle.dump(knn, open("model_gb.pkl", "wb"))
 
-
-# In[3]:
-
-
-from fastapi import FastAPI
-from colabcode import ColabCode
-from pydantic import BaseModel
-from fastapi.encoders import jsonable_encoder
-import pickle
-
-cc = ColabCode(port=12000, code=False)
-
 app = FastAPI(title="ML Models as API on Google Colab", description="with FastAPI and ColabCode", version="1.0")
-
 
 # Define the request body model
 class InputData(BaseModel):
@@ -93,7 +64,6 @@ async def read_root():
 
 @app.post("/predict")
 async def predict(input_data: InputData):
-    # data = dict(input_data)['data']
     print(input_data)
     # Prepare input data for prediction
     input_array = np.array([[input_data.room_type, input_data.single_bed, input_data.budget, input_data.have_transportation, input_data.inside_utm]])
@@ -109,9 +79,4 @@ async def predict(input_data: InputData):
     # Return the prediction result
     return response_content
 
-
-# In[ ]:
-
-
-cc.run_app(app=app)
-
+uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
