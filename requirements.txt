@@ -1,5 +1,5 @@
 fastapi==0.68.1
 uvicorn==0.15.0
-pandas==latest
-scikit-learn==latest
-numpy==latest
+pandas==1.3.4
+scikit-learn==0.24.2
+numpy==1.21.0
