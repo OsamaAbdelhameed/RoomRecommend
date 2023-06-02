@@ -1,6 +1,6 @@
 fastapi==0.68.1
 uvicorn==0.15.0
-pickle
-pandas
-scikit-learn
-numpy
+pickle==latest
+pandas==latest
+scikit-learn==latest
+numpy==latest
