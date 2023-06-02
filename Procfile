@@ -1,1 +1,1 @@
-web: uvicorn RoomRecommend:app --host=0.0.0.0 --port=$PORT
+web: uvicorn RecommendRoom:app --host=0.0.0.0 --port=${PORT:-5000}
