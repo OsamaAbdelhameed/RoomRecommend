@@ -5,12 +5,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from fastapi.encoders import jsonable_encoder
 
 # Load your dataset
 X = pd.read_csv('./data.csv', header=None)
-
 y = pd.read_csv('./labels.csv', header=None)
 y = y.iloc[:, 0]
 
@@ -47,9 +47,18 @@ class InputData(BaseModel):
     have_transportation: float
     inside_utm: float
 
+# Configure CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
+
 @app.get("/")
 async def read_root():
-  return {"message": "Recommendations requests is working....."}
+    return {"message": "Recommendations requests is working....."}
 
 @app.post("/predict")
 async def predict(input_data: InputData):
@@ -59,7 +68,7 @@ async def predict(input_data: InputData):
 
     # Make predictions
     predictions = knn.predict(input_array)
-    
+
     prediction_value = int(predictions[0])
     # Return the prediction result
     # Convert the response content to JSON serializable format
